@@ -1,0 +1,14 @@
+{
+  "name": "CareHorizon",
+  "openMeteo": {
+    "apiKey": ""
+  },
+  "liveCacheMin": 60,
+  "liveStaleMaxH": 24,
+  "features": {
+    "live": true,
+    "era5Archive": true,
+    "exportCsv": true,
+    "search": true
+  }
+}

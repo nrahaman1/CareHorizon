@@ -1,0 +1,13 @@
+# Large raw build inputs (downloaded via fetch_tiger2026.py & fetch_facilities.py)
+data/tiger2026/
+data/*.parquet
+
+# Local duplicate build output (index.html is the canonical GitHub Pages build)
+emergency_service_dashboard.html
+
+# Local config & Python caches
+carehorizon.config.json
+__pycache__/
+*.pyc
+.DS_Store
+Thumbs.db
