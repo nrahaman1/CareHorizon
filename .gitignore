@@ -5,8 +5,10 @@ data/*.parquet
 # Local duplicate build output (index.html is the canonical GitHub Pages build)
 emergency_service_dashboard.html
 
-# Local config & Python caches
+# Local config, promo video render assets & Python caches
 carehorizon.config.json
+promo_video/
+*.mp4
 __pycache__/
 *.pyc
 .DS_Store

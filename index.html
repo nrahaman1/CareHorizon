@@ -2018,35 +2018,28 @@ function drawFx(nowMs = performance.now()) {
     }
     c.strokeStyle = 'rgba(147,197,253,0.62)'; c.fillStyle = '#f8fafc'; c.lineWidth = 1; c.stroke(); c.fill();
   }
-  // Pulsing neon glow vibrance on selected County boundary, Block Group boundary, and Road (keeping original colors)
-  const selPulse = 0.5 + 0.5 * Math.sin(nowMs / 240);
+  // Steady, crisp, thin neon glow on selected County boundary, Block Group boundary, and Road (no pulsing/dimming)
   if (state.selCty >= 0 && CTY) {
     c.save(); setCtx(c); c.beginPath(); tracePoly(c, CTY, state.selCty);
     c.lineCap = 'round';
     c.setLineDash([12 / t.k, 4.5 / t.k, 2.2 / t.k, 3.2 / t.k, 2.2 / t.k, 4.5 / t.k]);
-    c.shadowColor = '#38bdf8'; c.shadowBlur = 10 + 12 * selPulse;
-    c.strokeStyle = `rgba(56, 189, 248, ${(0.34 + 0.34 * selPulse).toFixed(2)})`;
-    c.lineWidth = (4.8 + 1.8 * selPulse) / t.k; c.stroke();
-    c.shadowBlur = 6 + 6 * selPulse;
-    c.strokeStyle = '#38bdf8'; c.lineWidth = 2.4 / t.k; c.stroke();
+    c.shadowColor = '#38bdf8'; c.shadowBlur = 7;
+    c.strokeStyle = '#38bdf8'; c.lineWidth = 1.8 / t.k; c.stroke();
     c.restore();
   }
   if (state.popup?.bg >= 0) {
     const b = state.popup.bg, cty = BG.cty[b], stFips = CTY.stFips[cty], sp = STATE_POLYS[stFips];
     if (sp && b >= sp.start && b < sp.start + sp.n) {
       c.save(); setCtx(c); c.beginPath(); tracePoly(c, sp, b - sp.start);
-      c.shadowColor = '#fbbf24'; c.shadowBlur = 12 + 14 * selPulse;
-      c.strokeStyle = `rgba(251, 191, 36, ${(0.42 + 0.36 * selPulse).toFixed(2)})`;
-      c.lineWidth = (5.2 + 2.2 * selPulse) / t.k; c.stroke();
-      c.shadowBlur = 8 + 8 * selPulse;
-      c.strokeStyle = '#fbbf24'; c.lineWidth = 2.6 / t.k; c.stroke();
+      c.shadowColor = '#fbbf24'; c.shadowBlur = 7;
+      c.strokeStyle = '#fbbf24'; c.lineWidth = 1.9 / t.k; c.stroke();
       c.restore();
     } else {
       const [sx, sy] = [t.x + BG.x[b] * t.k, t.y + BG.y[b] * t.k];
       c.save();
-      c.shadowColor = '#fbbf24'; c.shadowBlur = 12 + 12 * selPulse;
-      c.beginPath(); c.arc(sx, sy, 8 + 4 * selPulse, 0, Math.PI * 2);
-      c.strokeStyle = '#fbbf24'; c.lineWidth = 2.6; c.stroke();
+      c.shadowColor = '#fbbf24'; c.shadowBlur = 7;
+      c.beginPath(); c.arc(sx, sy, 8, 0, Math.PI * 2);
+      c.strokeStyle = '#fbbf24'; c.lineWidth = 2.0; c.stroke();
       c.restore();
     }
   }
@@ -2063,11 +2056,8 @@ function drawFx(nowMs = performance.now()) {
       for (let e = 0; e < RD.n; e++) if (RD.cty[e] === rd.cty && (nid >= 0 ? RD.name_id[e] === nid : e === rd.segIdx)) traceLine(c, RD, e);
     }
     c.lineCap = 'round'; c.lineJoin = 'round';
-    c.shadowColor = '#fbbf24'; c.shadowBlur = 14 + 16 * selPulse;
-    c.strokeStyle = `rgba(251, 191, 36, ${(0.40 + 0.36 * selPulse).toFixed(2)})`;
-    c.lineWidth = (7.6 + 2.6 * selPulse) / t.k; c.stroke();
-    c.shadowBlur = 8 + 8 * selPulse;
-    c.strokeStyle = '#fbbf24'; c.lineWidth = 4.0 / t.k; c.stroke();
+    c.shadowColor = '#fbbf24'; c.shadowBlur = 8;
+    c.strokeStyle = '#fbbf24'; c.lineWidth = 2.6 / t.k; c.stroke();
     c.restore();
   }
   // Highlight selected Hospital or Fire Station with an animated pulsing target beacon + floating name pill
