@@ -5,28 +5,15 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>CareHorizon — TIGER/Line 2026 Road-Network Service-Area Shrinkage Forecast</title>
 <meta name="description" content="Live Open-Meteo / ERA5 forecast of US freeway travel-time loss, TIGER/Line 2026 road-network service-area shrinkage for hospitals and fire stations, and 2024 ACS 5-Year block-group age-cohort impact.">
-<meta name="theme-color" content="#f3f6fb">
+<meta name="theme-color" content="#1c2434">
 <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline' 'self' https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://tigerweb.geo.census.gov; style-src 'unsafe-inline' https://cdnjs.cloudflare.com; img-src data: blob: https://server.arcgisonline.com https://cdnjs.cloudflare.com; connect-src https://api.open-meteo.com https://customer-api.open-meteo.com https://archive-api.open-meteo.com https://tigerweb.geo.census.gov; base-uri 'none'; form-action 'none'">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%231a73e8'/%3E%3Cstop offset='1' stop-color='%2334a853'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='32' height='32' rx='8' fill='url(%23g)'/%3E%3Cpath fill='%23fff' d='M13 6h6v7h7v6h-7v7h-6v-7H6v-6h7z'/%3E%3C/svg%3E">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" integrity="sha512-h9FcoyWjHcOcmEVkxOfTLnmZFWIH0iZhZT1H2TbOq55xssQGEJHEaIm+PgoUaZbRvQTNTluNOEfb1ZRy6D3BOw==" crossorigin="anonymous" referrerpolicy="no-referrer">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js" integrity="sha512-puJW3E/qXDqYp9IfhAI54BJEaWIfloJ7JWs7OeD5i6ruC9JZL1gERT1wjtwXFlh7CjE7ZJ+/vcRZRkIYIb6p4g==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.5.1" integrity="sha384-jb8JQMbMoBUzgWatfe6COACi2ljcDdZQ2OxczGA3bGNeWe+6DChMTBJemed7ZnvJ" crossorigin="anonymous"></script>
 <style>
-:root, [data-theme="light"] {
-  /* Friendly Google Cloud / Maps Light Tonal Palette (Default) */
-  --bg: #f3f6fb; --panel: rgba(255, 255, 255, 0.90); --panel-solid: #ffffff; --panel-2: #f1f5f9; --panel-3: #e6edf6;
-  --border: rgba(60, 64, 67, 0.12); --border-hi: rgba(26, 115, 232, 0.34);
-  --text: #1f2937; --muted: #5f6368; --accent: #1a73e8; --accent-ink: #ffffff; --focus: #174ea6;
-  --hosp: #1a73e8; --fire: #e37400; --good: #188038; --warn: #d97706; --loss: #d93025; --sev: #c5221f;
-  --c-a0: #f29900; --c-a1: #1a73e8; --c-a2: #8430ce; --c-a3: #00897b; --c-a4: #d93025;
-  --shadow: 0 1px 3px rgba(60,64,67,.09), 0 8px 24px rgba(60,64,67,.09);
-  --shadow-float: 0 4px 14px rgba(60,64,67,.10), 0 18px 36px rgba(60,64,67,.10);
-  --hi: inset 0 1px 0 rgba(255,255,255,.90);
-  --ease: cubic-bezier(0.2, 0, 0, 1);
-  --ease-spring: cubic-bezier(0.05, 0.7, 0.1, 1);
-}
-[data-theme="dark"] {
-  /* Friendly Soft Twilight Slate Dark Palette (No Harsh Black) */
+:root, [data-theme="dark"] {
+  /* Friendly Soft Twilight Slate Dark Palette (Default) */
   --bg: #1c2434; --panel: rgba(34, 43, 61, 0.86); --panel-solid: #232d40; --panel-2: #2b374e; --panel-3: #364561;
   --border: rgba(203, 213, 225, 0.14); --border-hi: rgba(138, 180, 248, 0.42);
   --text: #eef2f7; --muted: #a6b4c8; --accent: #8ab4f8; --accent-ink: #0a2540; --focus: #a8c7fa;
@@ -35,6 +22,19 @@
   --shadow: 0 2px 6px rgba(10,16,28,.24), 0 12px 30px rgba(10,16,28,.28);
   --shadow-float: 0 6px 16px rgba(10,16,28,.26), 0 20px 42px rgba(10,16,28,.32);
   --hi: inset 0 1px 0 rgba(255,255,255,.08);
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.05, 0.7, 0.1, 1);
+}
+[data-theme="light"] {
+  /* Friendly Google Cloud / Maps Light Tonal Palette */
+  --bg: #f3f6fb; --panel: rgba(255, 255, 255, 0.90); --panel-solid: #ffffff; --panel-2: #f1f5f9; --panel-3: #e6edf6;
+  --border: rgba(60, 64, 67, 0.12); --border-hi: rgba(26, 115, 232, 0.34);
+  --text: #1f2937; --muted: #5f6368; --accent: #1a73e8; --accent-ink: #ffffff; --focus: #174ea6;
+  --hosp: #1a73e8; --fire: #e37400; --good: #188038; --warn: #d97706; --loss: #d93025; --sev: #c5221f;
+  --c-a0: #f29900; --c-a1: #1a73e8; --c-a2: #8430ce; --c-a3: #00897b; --c-a4: #d93025;
+  --shadow: 0 1px 3px rgba(60,64,67,.09), 0 8px 24px rgba(60,64,67,.09);
+  --shadow-float: 0 4px 14px rgba(60,64,67,.10), 0 18px 36px rgba(60,64,67,.10);
+  --hi: inset 0 1px 0 rgba(255,255,255,.90);
 }
 * { box-sizing: border-box; margin: 0; padding: 0; }
 [hidden] { display: none !important; }
@@ -297,9 +297,31 @@ tbody tr { cursor: pointer; } tbody tr:hover { background: var(--panel-2); }
 .age-pill[aria-pressed="true"] { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--panel-2)); font-weight: 650; }
 .age-pill .sw { width: 8px; height: 8px; border-radius: 50%; }
 
-/* Loading & Toast & Dialog */
-#loading { inset: 0; z-index: 1500; display: flex; align-items: center; justify-content: center; gap: 10px; font-size: 14px; color: var(--muted); border-radius: 0; border: 0; }
-#loading::before { content: ''; width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--border); border-top-color: var(--accent); animation: spin .8s linear infinite; }
+/* Full-Screen CareHorizon Splash Loading Screen */
+#loading { position: fixed; inset: 0; z-index: 6000; display: grid; place-items: center; padding: 24px;
+  background: radial-gradient(circle at 50% 38%, #26324a 0%, #1c2434 58%, #141a27 100%);
+  color: #eef2f7; transition: opacity .42s var(--ease), transform .42s var(--ease), visibility 0s linear .42s; }
+#loading.fade-out { opacity: 0; transform: scale(1.015); visibility: hidden; pointer-events: none; }
+.load-card { width: min(440px, 100%); background: rgba(35, 45, 64, 0.86); border: 1px solid rgba(138, 180, 248, 0.24);
+  border-radius: 22px; padding: 30px 28px 26px; text-align: center; box-shadow: 0 28px 80px rgba(6, 11, 22, 0.55), inset 0 1px 0 rgba(255,255,255,0.08);
+  backdrop-filter: blur(18px); display: flex; flex-direction: column; align-items: center; gap: 12px; }
+.load-logo { width: 54px; height: 54px; border-radius: 15px; display: grid; place-items: center;
+  background: linear-gradient(135deg, #1a73e8 0%, #4285f4 58%, #34a853 100%); color: #fff;
+  box-shadow: 0 0 0 8px rgba(138, 180, 248, 0.12), 0 10px 28px rgba(26, 115, 232, 0.42);
+  animation: loadPulse 2s ease-in-out infinite; }
+@keyframes loadPulse { 0%, 100% { box-shadow: 0 0 0 6px rgba(138, 180, 248, 0.12), 0 10px 28px rgba(26, 115, 232, 0.42); } 50% { box-shadow: 0 0 0 13px rgba(138, 180, 248, 0.20), 0 14px 36px rgba(26, 115, 232, 0.52); } }
+.load-title { font-size: 22px; font-weight: 700; letter-spacing: -.02em; color: #f8fafc; }
+.load-sub { font-size: 12px; color: #a6b4c8; margin-top: -6px; }
+.load-track { width: 100%; height: 6px; border-radius: 999px; background: rgba(203, 213, 225, 0.14); overflow: hidden; margin-top: 6px; position: relative; }
+.load-bar { height: 100%; width: 22%; border-radius: 999px; background: linear-gradient(90deg, #4285f4 0%, #8ab4f8 55%, #81c995 100%);
+  transition: width .35s var(--ease); position: relative; }
+.load-bar::after { content: ''; position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.45), transparent);
+  animation: loadShimmer 1.3s linear infinite; }
+@keyframes loadShimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.load-msg { font-size: 12.5px; color: #cbd5e1; min-height: 18px; font-weight: 500; }
+.load-chips { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-top: 4px; }
+.load-chips span { padding: 4px 10px; border-radius: 999px; font-size: 10.5px; font-weight: 600; color: #8ab4f8;
+  background: rgba(138, 180, 248, 0.12); border: 1px solid rgba(138, 180, 248, 0.20); }
 @keyframes spin { to { transform: rotate(360deg); } }
 #toast { left: 50%; top: 82px; transform: translateX(-50%); padding: 8px 14px; font-size: 12px; opacity: 0; visibility: hidden; transition: opacity .18s, visibility 0s linear .18s; max-width: 90%; z-index: 1400; }
 #toast.show { opacity: 1; visibility: visible; transition: opacity .18s, visibility 0s; }
@@ -385,6 +407,20 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
 </style>
 </head>
 <body data-theme="dark">
+<div id="loading" role="status" aria-live="polite">
+  <div class="load-card">
+    <div class="load-logo" aria-hidden="true"><svg width="28" height="28" viewBox="0 0 24 24" fill="currentColor"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></svg></div>
+    <div class="load-title">CareHorizon</div>
+    <div class="load-sub">U.S. Emergency Service-Area Shrinkage Forecast</div>
+    <div class="load-track"><div class="load-bar" id="load-bar"></div></div>
+    <div class="load-msg" id="load-msg">Unpacking TIGER/Line 2026 road network, 238k block groups &amp; 2024 ACS 5-Year age data…</div>
+    <div class="load-chips">
+      <span>218,808 Highways</span>
+      <span>58k Hospitals &amp; Fire</span>
+      <span>238k Block Groups</span>
+    </div>
+  </div>
+</div>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
   <symbol id="i-cross" viewBox="0 0 24 24"><path d="M9 3h6v6h6v6h-6v6H9v-6H3V9h6z"/></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3"/></symbol>
@@ -421,7 +457,7 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
   </div>
   <button class="btn" id="rail-toggle" aria-expanded="false" title="Toggle Search & Hotspots"><svg class="ic" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-list"/></svg><span>Hotspots</span></button>
   <button class="btn" id="tour-btn" title="Start Interactive Dashboard Tutorial"><svg class="ic" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-play"/></svg><span>Tour</span></button>
-  <button class="btn" id="theme-btn" title="Switch between Light and Dark theme" aria-label="Switch theme"><span id="theme-ic" aria-hidden="true">🌙</span><span id="theme-lbl">Dark</span></button>
+  <button class="btn" id="theme-btn" title="Switch between Dark and Light theme" aria-label="Switch theme"><span id="theme-ic" aria-hidden="true">☀️</span><span id="theme-lbl">Light</span></button>
   <button class="btn" id="about-btn" title="About, benchmarks & self-test"><svg class="ic" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-info"/></svg><span>Model &amp; Test</span></button>
   <button class="btn primary" id="report-toggle" aria-expanded="true" aria-controls="report"><svg class="ic" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-chart"/></svg><span>Report Bar</span></button>
 </header>
@@ -485,8 +521,8 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
     <summary class="btn">Layers &amp; Map</summary>
     <div class="pop-body">
       <div class="seg" style="margin-bottom:4px" role="group" aria-label="Basemap">
-        <button data-bm="light" aria-pressed="true">Light</button>
-        <button data-bm="dark" aria-pressed="false">Dark</button>
+        <button data-bm="dark" aria-pressed="true">Dark</button>
+        <button data-bm="light" aria-pressed="false">Light</button>
         <button data-bm="satellite" aria-pressed="false">Satellite</button>
       </div>
       <label class="ck"><input type="checkbox" id="lyr-cty" checked>County Overlay &amp; Boundaries</label>
@@ -558,7 +594,6 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
         <button class="btn icon close" aria-label="Close"><svg class="ic" fill="none" stroke="currentColor" stroke-width="2"><use href="#i-x"/></svg></button>
         <div id="popup-body"></div>
       </div>
-      <div class="ov" id="loading">Unpacking TIGER/Line 2026 road network, 239k block groups &amp; 2024 ACS 5-Year age data…</div>
       <div class="ov" id="toast" role="status"></div>
     </div>
 
@@ -3305,11 +3340,23 @@ async function init() {
   document.body.classList.toggle('report-open', state.reportOpen);
   if ($('report-toggle')) $('report-toggle').setAttribute('aria-expanded', state.reportOpen);
   if (isPhone && $('legend')) $('legend').open = false;
+  const setLoad = (pct, msg) => {
+    if ($('load-bar')) $('load-bar').style.width = pct + '%';
+    if ($('load-msg')) $('load-msg').textContent = msg;
+  };
+  const nextFrame = () => new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+
+  setLoad(28, 'Unpacking 218,808 TIGER/Line 2026 highway corridors & 238,194 Block Groups…');
+  await nextFrame();
   map.fitBounds([[24.5, -125], [49.5, -66.5]], { padding: [10, 10] });
-  PAL = PALS.light; resize(); syncView();
+  PAL = PALS.dark; resize(); syncView();
   await decodeAll();
-  setupControls(); initCharts(); setBasemap('light');
+  setLoad(64, 'Initializing interactive charts, facilities & dark-mode map layers…');
+  await nextFrame();
+  setupControls(); initCharts(); setBasemap('dark');
+  setLoad(84, 'Fetching live 72-hour Open-Meteo / ERA5 weather forecast…');
   await switchWeatherSource();
+  setLoad(100, 'Ready!');
   // Antigravity subtle 3D spatial tilt on floating KPI cards (respects prefers-reduced-motion)
   if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     document.querySelectorAll('.kpi').forEach(card => {
