@@ -384,15 +384,18 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
   .rail { display: none; position: absolute; inset: 6px auto 6px 6px; width: min(310px, calc(100% - 12px)); z-index: 1250;
     background: var(--panel-solid); border: 1px solid var(--border-hi); border-radius: 12px; padding: 8px; box-shadow: var(--shadow); }
   body.rail-open .rail { display: flex; }
-  .report { width: auto; flex: 0 0 50dvh; max-height: 56dvh; }
+  .report { position: fixed; left: 10px; right: 10px; bottom: 10px; width: auto; height: 78dvh; max-height: 78dvh; z-index: 2500;
+    border-radius: 18px; background: var(--panel-solid); box-shadow: 0 -14px 48px rgba(0, 0, 0, 0.52), 0 0 0 1px var(--border-hi); }
+  body.report-open .report { animation: agSheetUp .28s var(--ease-spring) both; }
   .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); right: 50px; gap: 5px; }
   .kpi { padding: 5px 8px; } .kpi .v { font-size: 16px; }
 }
+@keyframes agSheetUp { from { opacity: 0; transform: translateY(36px); } to { opacity: 1; transform: translateY(0); } }
 @media (max-width: 640px) {
-  body { font-size: 12px; }
-  .top { padding: 5px 6px; padding-top: max(5px, env(safe-area-inset-top)); }
+  body { font-size: 12.5px; }
+  .top { padding: 5px 6px; padding-top: max(5px, env(safe-area-inset-top)); gap: 5px; }
   .brand h1 { font-size: 14px; }
-  #about-btn span, #tour-btn span, #report-toggle span, #rail-toggle span { display: none; }
+  #about-btn span, #tour-btn span, #report-toggle span, #rail-toggle span, #theme-lbl { display: none; }
   .clock-btn { min-height: 32px; padding: 2px 7px; }
   .clock-btn .m { display: none; }
   .btn, select { min-height: 34px; }
@@ -400,7 +403,28 @@ dialog#about::backdrop { background: rgba(2,6,15,.6); backdrop-filter: blur(4px)
   .kpi .l { font-size: 9px; } .kpi .v { font-size: 14.5px; } .kpi .s { font-size: 9.5px; }
   details.legend { left: 6px; bottom: 44px; max-width: calc(100% - 12px); }
   #popup { width: calc(100% - 16px) !important; left: 8px !important; right: 8px !important; top: auto !important; bottom: 8px !important; max-height: 48dvh; }
-  .report { flex: 0 0 58dvh; max-height: 62dvh; }
+  /* Spacious Full-Width Mobile Bottom Sheet for Report Bar */
+  .report { left: 0; right: 0; bottom: 0; height: 90dvh; max-height: 90dvh; border-radius: 20px 20px 0 0;
+    padding-bottom: env(safe-area-inset-bottom); }
+  .report::before { content: ''; display: block; width: 40px; height: 4px; border-radius: 99px; background: var(--border-hi); margin: 8px auto 2px; flex: none; }
+  .report-head { padding: 4px 10px 0; gap: 6px; }
+  .tabs { gap: 4px; -webkit-overflow-scrolling: touch; }
+  .tabs button { min-height: 40px; padding: 0 11px; font-size: 12.5px; }
+  .pane { padding: 12px 12px 22px; gap: 12px; -webkit-overflow-scrolling: touch; }
+  .summary { gap: 8px; }
+  .summary > div { padding: 9px 11px; }
+  .summary .k { font-size: 9.5px; line-height: 1.3; }
+  .summary .v { font-size: 16px; }
+  .chart-card { padding: 11px 12px; }
+  .chart-card h4 { font-size: 12px; flex-wrap: wrap; }
+  .chart-box { height: 210px !important; }
+  #ch-age-cut { max-height: 265px; }
+  .pane[data-pane="demog"] .chart-card:first-of-type .chart-box { height: 265px !important; }
+  .chart-box.tall { height: 260px !important; }
+  .tablewrap { max-height: 46dvh; -webkit-overflow-scrolling: touch; }
+  th, td { padding: 7px 9px; font-size: 12px; }
+  .age-pills { gap: 6px; }
+  .age-pill { padding: 6px 10px; font-size: 11.5px; }
   .timeline { padding: 5px 6px; padding-bottom: max(5px, env(safe-area-inset-bottom)); gap: 5px; }
   .tl-time { min-width: 34px; font-size: 11px; }
 }
@@ -2515,7 +2539,7 @@ function initCharts() {
       plugins: {
         legend: {
           display: true,
-          position: 'right',
+          position: window.innerWidth <= 640 ? 'bottom' : 'right',
           labels: {
             boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle', padding: 9,
             font: { size: 11, weight: '500' },
@@ -2612,6 +2636,9 @@ function themeCharts() {
   charts.tsShrink.data.datasets[0].borderColor = th.tsShrink[0];
   charts.tsShrink.data.datasets[1].borderColor = th.tsShrink[1];
   for (const ch of Object.values(charts)) {
+    if (ch === charts.ageCut) {
+      ch.options.plugins.legend.position = window.innerWidth <= 640 ? 'bottom' : 'right';
+    }
     if (ch.options.scales) {
       for (const ax of Object.values(ch.options.scales)) { ax.ticks.color = PAL.chartText; ax.grid.color = PAL.chartGrid; }
     }
@@ -3009,7 +3036,18 @@ function setupControls() {
     setTime(bestH);
   };
 
-  $('report-toggle').onclick = () => { state.reportOpen = !state.reportOpen; document.body.classList.toggle('report-open', state.reportOpen); requestAnimationFrame(() => { map.invalidateSize(); if (state.reportOpen) updateUI(); }); };
+  $('report-toggle').onclick = () => {
+    state.reportOpen = !state.reportOpen;
+    document.body.classList.toggle('report-open', state.reportOpen);
+    $('report-toggle').setAttribute('aria-expanded', state.reportOpen);
+    requestAnimationFrame(() => {
+      map.invalidateSize();
+      if (state.reportOpen) {
+        if (charts.ageCut) charts.ageCut.options.plugins.legend.position = window.innerWidth <= 640 ? 'bottom' : 'right';
+        updateUI();
+      }
+    });
+  };
   $('report-close').onclick = () => { state.reportOpen = false; document.body.classList.remove('report-open'); requestAnimationFrame(() => map.invalidateSize()); };
   document.querySelector('.tabs').addEventListener('click', e => {
     const b = e.target.closest('[data-tab]'); if (!b) return;
